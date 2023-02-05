@@ -4,13 +4,9 @@
 #include "TFT_eSPI_User_Setup.h"
 
 TFT_eSPI tft = TFT_eSPI();  // Invoke custom library
-TFT_eSprite spr_clock_block = TFT_eSprite(&tft);
-TFT_eSprite spr_mario = TFT_eSprite(&tft);  // Declare Sprite object "spr" with pointer to "tft" object
+TFT_eSprite spr_work = TFT_eSprite(&tft);  // Declare Sprite object "spr" with pointer to "tft" object
 TFT_eSprite spr_background = TFT_eSprite(&tft);
-TFT_eSprite spr_ground = TFT_eSprite(&tft);
-TFT_eSprite spr_bush = TFT_eSprite(&tft);
-TFT_eSprite spr_hill = TFT_eSprite(&tft);
-TFT_eSprite spr_cloud = TFT_eSprite(&tft);
+
 
 
 #include "bush.h"
@@ -70,6 +66,52 @@ const unsigned short * clock_face_font[] = {
 //   tft.pushImage(CLOCK_SECOND_DIGIT_ONES, CLOCK_DIGIT_Y, CLOCK_FACE_FONT_DIGIT_WIDTH, CLOCK_FACE_FONT_DIGIT_HEIGHT, clock_face_font[minutes % 10], TRANSPARENT_COLOR);
 // }
 
+void refreshDisplay() {
+  spr_background.fillSprite(BACKGROUND_COLOR);
+
+  spr_work.createSprite(GROUND_WIDTH, GROUND_HEIGHT);
+  spr_work.setSwapBytes(true);
+  spr_work.pushImage(0, 0, GROUND_WIDTH, GROUND_HEIGHT, ground);
+  for (uint8_t i = 0; i < (tft.width() / GROUND_WIDTH); i++) {
+    spr_work.pushToSprite(&spr_background, i * GROUND_WIDTH, 112, TRANSPARENT_COLOR);
+  }
+  spr_work.deleteSprite();
+
+  spr_work.createSprite(BUSH_WIDTH, BUSH_HEIGHT);
+  spr_work.setSwapBytes(true);
+  spr_work.pushImage(0, 0, BUSH_WIDTH, BUSH_HEIGHT, bush);
+  spr_work.pushToSprite(&spr_background, 84, 96, TRANSPARENT_COLOR);
+  spr_work.deleteSprite();
+
+  spr_work.createSprite(HILL_WIDTH, HILL_HEIGHT);
+  spr_work.setSwapBytes(true);
+  spr_work.pushImage(0, 0, HILL_WIDTH, HILL_HEIGHT, hill);
+  spr_work.pushToSprite(&spr_background, -40, 77, TRANSPARENT_COLOR);
+  spr_work.deleteSprite();
+
+  spr_work.createSprite(CLOUD_WIDTH, CLOUD_HEIGHT);
+  spr_work.setSwapBytes(true);
+  spr_work.pushImage(0, 0, CLOUD_WIDTH, CLOUD_HEIGHT, cloud);
+  spr_work.pushToSprite(&spr_background, -20, 32, TRANSPARENT_COLOR);
+  spr_work.pushToSprite(&spr_background, 115, 4, TRANSPARENT_COLOR);
+  spr_work.deleteSprite();
+
+  spr_work.createSprite(CLOCK_BG_WIDTH, CLOCK_BG_HEIGHT);
+  spr_work.setSwapBytes(true);
+  spr_work.pushImage(0, 0, CLOCK_BG_WIDTH, CLOCK_BG_HEIGHT, clock_bg);
+  spr_work.pushToSprite(&spr_background, 15, 14, TRANSPARENT_COLOR);
+  spr_work.pushToSprite(&spr_background, 63, 14, TRANSPARENT_COLOR);
+  spr_work.deleteSprite();
+
+  spr_work.createSprite(MARIO_STAND_WIDTH, MARIO_STAND_HEIGHT);
+  spr_work.setSwapBytes(true);
+  spr_work.pushImage(0, 0, MARIO_STAND_WIDTH, MARIO_STAND_HEIGHT, mario_stand);
+  spr_work.pushToSprite(&spr_background, random(100), random(100), TRANSPARENT_COLOR);
+  spr_work.deleteSprite();
+
+  spr_background.pushSprite(0, 0);
+}
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -87,49 +129,8 @@ void setup() {
 
   // Draw the background assets
   spr_background.createSprite(tft.width(), tft.height());
-  spr_background.fillSprite(BACKGROUND_COLOR);
 
-  // crate sprites for all the elements
-  spr_ground.createSprite(GROUND_WIDTH, GROUND_HEIGHT);
-  spr_ground.setSwapBytes(true);
-  spr_ground.pushImage(0, 0, GROUND_WIDTH, GROUND_HEIGHT, ground);
-
-  spr_bush.createSprite(BUSH_WIDTH - 20, BUSH_HEIGHT);
-  spr_bush.setSwapBytes(true);
-  spr_bush.pushImage(0, 0, BUSH_WIDTH, BUSH_HEIGHT, bush);
-
-  spr_hill.createSprite(HILL_WIDTH - 40, HILL_HEIGHT);
-  spr_hill.setSwapBytes(true);
-  spr_hill.pushImage(0 - 40, 0, HILL_WIDTH, HILL_HEIGHT, hill);
-
-  spr_cloud.createSprite(CLOUD_WIDTH, CLOUD_HEIGHT);
-  spr_cloud.setSwapBytes(true);
-  spr_cloud.pushImage(0, 0, CLOUD_WIDTH, CLOUD_HEIGHT, cloud);
-
-
-  spr_mario.createSprite(MARIO_STAND_WIDTH, MARIO_STAND_HEIGHT);
-  spr_mario.setSwapBytes(true);
-  spr_mario.pushImage(0, 0, MARIO_STAND_WIDTH, MARIO_STAND_HEIGHT, mario_stand);
-
-  spr_clock_block.createSprite(CLOCK_BG_WIDTH, CLOCK_BG_HEIGHT);
-  spr_clock_block.setSwapBytes(true);
-  spr_clock_block.pushImage(0, 0, CLOCK_BG_WIDTH, CLOCK_BG_HEIGHT, clock_bg);
-
-
-  for (uint8_t i = 0; i < (tft.width() / GROUND_WIDTH); i++) {
-    spr_ground.pushToSprite(&spr_background, i * GROUND_WIDTH, 112, TRANSPARENT_COLOR);
-  }
-  spr_bush.pushToSprite(&spr_background, 84, 96, TRANSPARENT_COLOR);
-  spr_hill.pushToSprite(&spr_background, 0, 77, TRANSPARENT_COLOR);
-  spr_cloud.pushToSprite(&spr_background, -20, 32, TRANSPARENT_COLOR);
-  spr_cloud.pushToSprite(&spr_background, 115, 4, TRANSPARENT_COLOR);
-
-
-
-  spr_clock_block.pushToSprite(&spr_background, 15, 14, TRANSPARENT_COLOR);
-  spr_clock_block.pushToSprite(&spr_background, 63, 14, TRANSPARENT_COLOR);
-  spr_mario.pushToSprite(&spr_background, 47, 80, TRANSPARENT_COLOR);
-  spr_background.pushSprite(0, 0);
+  refreshDisplay();
 
   Serial.println(ESP.getFreeHeap());
 
@@ -144,20 +145,21 @@ void loop() {
   // spr_mario.pushSprite(random(tft.width() - MARIO_STAND_WIDTH), random(tft.height() - MARIO_STAND_HEIGHT) , TRANSPARENT_COLOR);
   //spr_mario.pushSprite(random(10), random(10) , TRANSPARENT_COLOR);
 
-  spr_background.fillSprite(BACKGROUND_COLOR);
-  for (uint8_t i = 0; i < (tft.width() / GROUND_WIDTH); i++) {
-    spr_ground.pushToSprite(&spr_background, i * GROUND_WIDTH, 112, TRANSPARENT_COLOR);
-  }
-  spr_bush.pushToSprite(&spr_background, 84, 96, TRANSPARENT_COLOR);
-  spr_hill.pushToSprite(&spr_background, 0, 77, TRANSPARENT_COLOR);
-  spr_cloud.pushToSprite(&spr_background, -20, 32, TRANSPARENT_COLOR);
-  spr_cloud.pushToSprite(&spr_background, 115, 4, TRANSPARENT_COLOR);
+  // spr_background.fillSprite(BACKGROUND_COLOR);
+  // for (uint8_t i = 0; i < (tft.width() / GROUND_WIDTH); i++) {
+  //   spr_ground.pushToSprite(&spr_background, i * GROUND_WIDTH, 112, TRANSPARENT_COLOR);
+  // }
+  // spr_bush.pushToSprite(&spr_background, 84, 96, TRANSPARENT_COLOR);
+  // spr_hill.pushToSprite(&spr_background, 0, 77, TRANSPARENT_COLOR);
+  // spr_cloud.pushToSprite(&spr_background, -20, 32, TRANSPARENT_COLOR);
+  // spr_cloud.pushToSprite(&spr_background, 115, 4, TRANSPARENT_COLOR);
 
-  spr_clock_block.pushToSprite(&spr_background, 15, 14, TRANSPARENT_COLOR);
-  spr_clock_block.pushToSprite(&spr_background, 63, 14, TRANSPARENT_COLOR);
-  // spr_mario.pushToSprite(&spr_background, 47, 80, TRANSPARENT_COLOR);
-  spr_mario.pushToSprite(&spr_background, random(100), random(100), TRANSPARENT_COLOR);
+  // spr_clock_block.pushToSprite(&spr_background, 15, 14, TRANSPARENT_COLOR);
+  // spr_clock_block.pushToSprite(&spr_background, 63, 14, TRANSPARENT_COLOR);
+  // // spr_mario.pushToSprite(&spr_background, 47, 80, TRANSPARENT_COLOR);
+  // spr_mario.pushToSprite(&spr_background, random(100), random(100), TRANSPARENT_COLOR);
   
-  spr_background.pushSprite(0, 0);
+  // spr_background.pushSprite(0, 0);
+  refreshDisplay();
   //delay(100);
 }
