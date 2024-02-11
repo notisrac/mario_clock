@@ -117,12 +117,22 @@ void Mario::update(int frameTime)
 		_fYPos += ((_vDirection * _vVelocity) / 1000) * frameTime;
 		_yPos = round(_fYPos);
 
-
 		//std::cout << _yPos << std::endl;
 	}
 
 	//std::cout << "x: " << _xPos << " (" << _fXPos << ")" << '\t' << "y: " << _yPos << " (" << _fYPos << ")" << std::endl;
+	// Serial.println(_fYPos);
 
+}
+
+void Mario::collisionTop()
+{
+	if (_moveState == GameObjectMoveStates::Ascending)
+	{
+		_moveState = GameObjectMoveStates::Descending;
+		_vDirection = 1;
+	}
+	
 }
 
 

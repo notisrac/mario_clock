@@ -12,7 +12,7 @@ public:
 	// game object update logic goes here - eg.: move game object
 	void handleEvents(BitFlag* events) override;
 	void update(int frameTime) override;
-	void update(int frameTime, int tens, int ones);
+	void update(int frameTime, int hours, int minutes);
 	void render() override;
 	virtual int getWidth() override
 	{
@@ -27,8 +27,8 @@ private:
 	void _renderBackground(int x, int y);
 	void _renderDigit(int x, int y, int digit);
 	SpriteSheet* _font;
-	int _digitTens = 0;
-	int _digitOnes = 0;
+	int _digitHours = 0;
+	int _digitMinutes = 0;
 	bool _bumpEvent = false;
 	float _yInternal = 0;
 };

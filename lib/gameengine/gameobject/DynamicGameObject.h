@@ -29,8 +29,8 @@ public:
 
 
 protected:
-	char _hDirection = 0;
-	char _vDirection = 0;
+	int8_t _hDirection = 0;
+	int8_t _vDirection = 0;
 	float _fXPos = 0;
 	float _fYPos = 0;
 	float _hVelocity = 0;

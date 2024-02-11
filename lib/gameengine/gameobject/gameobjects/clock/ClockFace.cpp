@@ -25,11 +25,11 @@ void ClockFace::handleEvents(BitFlag* events)
 
 }
 
-void ClockFace::update(int frameTime, int tens, int ones)
+void ClockFace::update(int frameTime, int hours, int minutes)
 {
 	update(frameTime);
-	_digitTens = tens % 24;
-	_digitOnes = ones % 60;
+	_digitHours = hours % 24;
+	_digitMinutes = minutes % 60;
 }
 
 void ClockFace::update(int frameTime)
@@ -78,13 +78,13 @@ void ClockFace::_renderDigit(int x, int y, int digit)
 
 void ClockFace::render()
 {
-	// tens
+	// hours
 	_renderBackground(_xPos, _yPos + round(_yInternal));
-	_renderDigit(_xPos + 5, _yPos + 12 + round(_yInternal), _digitTens / 10);
-	_renderDigit(_xPos + 25, _yPos + 12 + round(_yInternal), _digitTens % 10);
+	_renderDigit(_xPos + 5, _yPos + 12 + round(_yInternal), _digitHours / 10);
+	_renderDigit(_xPos + 25, _yPos + 12 + round(_yInternal), _digitHours % 10);
 
-	// ones
+	// minutes
 	_renderBackground(_xPos + 3 * _spriteSheet->spriteWidth(), _yPos + round(_yInternal));
-	_renderDigit(_xPos + 48 + 5, _yPos + 12 + round(_yInternal), _digitOnes / 10);
-	_renderDigit(_xPos + 48 + 25, _yPos + 12 + round(_yInternal), _digitOnes % 10);
+	_renderDigit(_xPos + 48 + 5, _yPos + 12 + round(_yInternal), _digitMinutes / 10);
+	_renderDigit(_xPos + 48 + 25, _yPos + 12 + round(_yInternal), _digitMinutes % 10);
 }

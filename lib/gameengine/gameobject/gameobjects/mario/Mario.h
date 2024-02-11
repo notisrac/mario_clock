@@ -59,6 +59,7 @@ public:
 	{
 		return _spriteSheet->spriteHeight() * 2;
 	}
+	void collisionTop();
 
 protected:
 	void renderMario(unsigned char topLeft, unsigned char topRight, unsigned char bottomLeft, unsigned char bottomRight);
