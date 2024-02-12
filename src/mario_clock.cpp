@@ -1,23 +1,17 @@
 /**************************************************************************************************
  * SUPER MARIO CLOCK
- * (c) 2023 Noti
+ * (c) 2023-2024 Noti
  * 
- * TODO https://randomnerdtutorials.com/esp8266-nodemcu-date-time-ntp-client-server-arduino/
+ * DONE https://randomnerdtutorials.com/esp8266-nodemcu-date-time-ntp-client-server-arduino/
+ * TODO https://johnmu.com/2022-esp8266-wifi-speed/ - eliminate lag at wifi connection (disable persisting the wifi settings)
  *
  **************************************************************************************************/
-
-// https://johnmu.com/2022-esp8266-wifi-speed/
 
 #include <Arduino.h>
 
 #include <ESP8266WiFi.h>
 #include <NTPClient.h>  // https://github.com/arduino-libraries/NTPClient
 #include <WiFiUdp.h>
-
-// #include <ESP8266HTTPClient.h>
-// #include <WiFiClientSecure.h>
-
-// #include <ArduinoJson.h>
 
 #include <TimeLib.h>    // https://github.com/PaulStoffregen/Time
 #include <Timezone.h>   // https://github.com/JChristensen/Timezone
@@ -47,17 +41,14 @@
 
 const char *ssid     = "...";
 const char *password = "...";
-// String timeServerUrl = "https://timeapi.io/api/Time/current/zone?timeZone=Europe/Budapest";
 
 
 WiFiUDP ntpUDP;
 // NTPClient timeClient(ntpUDP, "ntp.telekom.hu", 3600000); // update time every 1 hour
 NTPClient timeClient(ntpUDP);
 bool wifiConnectedNotified = false;
-// unsigned long timeLastUpdated = 0;
 int timeMinutes = 0;
 int timeHours = 0;
-// JsonDocument doc;
 
 // Central European Time Zone (Budapest)
 TimeChangeRule myDST = {"CEST", Last, Sun, Mar, 1, 120};    // Daylight time = UTC + 2 hours
@@ -282,6 +273,7 @@ void loop()
 			clockFace.handleEvents(&BitFlag().SetFlag(EventTypes::ButtonReturn));
 			lastClockBumpTime = millis();
 			clockFace.update(lastFrameTime, timeHours, timeMinutes);
+			// signal Mario that he has hit something on the way up, and should start falling
 			mario.collisionTop();
 		}
 	}
