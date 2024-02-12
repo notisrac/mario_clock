@@ -16,6 +16,16 @@
 #include <TimeLib.h>    // https://github.com/PaulStoffregen/Time
 #include <Timezone.h>   // https://github.com/JChristensen/Timezone
 
+#include "../include/secrets.h"
+/* 
+ SECRETS:
+	Create a "secrets.h" file in the "include" folder with the following content:
+		#define SSID "whatever your ssid is"
+		#define PASSWORD "your password"
+*/
+#ifndef SSID
+	#error "You need to create a secrets.h file in the include folder! See code for details!"
+#endif
 
 #include "../include/clock_face_font.h"
 #include "../include/gamespritesheet.h"
@@ -39,8 +49,8 @@
 
 #define TIME_UPDATE_INTERVAL 10000
 
-const char *ssid     = "...";
-const char *password = "...";
+const char *ssid     = SSID;
+const char *password = PASSWORD;
 
 
 WiFiUDP ntpUDP;
@@ -93,7 +103,7 @@ time_t requestTimeSync()
 	{
 		if(timeClient.update())
 		{
-			Serial.printf_P(PSTR("NTP time: %s\n"), timeClient.getFormattedTime().c_str());
+			Serial.printf_P(PSTR("NTP time: %s (UTC)\n"), timeClient.getFormattedTime().c_str());
 			time_t utc = timeClient.getEpochTime();
 			time_t localTime = myTZ.toLocal(utc, &tcr);
 			
@@ -128,7 +138,7 @@ void setup()
 	Serial.begin(115200);
 	Serial.println();
 	Serial.println(F(" -= Super Mario Clock =-"));
-	Serial.println(F("(c) noti, 2023"));
+	Serial.println(F("(c) noti, 2023-2024"));
 	Serial.println();
 
 	Serial.printf_P(PSTR("%d bytes free\n"), ESP.getFreeHeap());
